@@ -11,7 +11,7 @@
     "url": "git+https://github.com/LeGustaVinho/legendary-tools-ui.git"
   },
   "dependencies": {
-    "com.legustavinho.legendary-tools-common": "https://github.com/LeGustaVinho/legendary-tools-common.git"
+    "com.legustavinho.legendary-tools-common": "1.0.3"
   },
   "author": {
     "name": "LeGustaVinho",
