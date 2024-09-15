@@ -1,7 +1,7 @@
 {
   "name": "com.legustavinho.legendary-tools-ui",
   "displayName": "Legendary Tools - UI",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2019.4",
   "type": "library",
   "keywords": [],
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/LeGustaVinho/legendary-tools-ui.git"
   },
   "dependencies": {
-    "com.legustavinho.legendary-tools-common": "1.0.3"
+    "com.legustavinho.legendary-tools-common": "1.0.12"
   },
   "author": {
     "name": "LeGustaVinho",
