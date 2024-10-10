@@ -13,7 +13,7 @@ namespace LegendaryTools.UI
         public interface IListingItem
         {
             void Init(TData item);
-            void Update(TData item);
+            void UpdateUI(TData item);
         }
         
         public readonly Func<TData[]> DataProvider;
@@ -75,7 +75,7 @@ namespace LegendaryTools.UI
         private void CreateOrUpdate(TData currentItem)
         {
             if (gameObjectTable.TryGetValue(currentItem, out TGameObject go) && !ForceDestroyBeforeAdd)
-                go.Update(currentItem);
+                go.UpdateUI(currentItem);
             else
                 CreateGameObject(currentItem);
         }
