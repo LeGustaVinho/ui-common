@@ -16,14 +16,22 @@ namespace LegendaryTools.UI
             void UpdateUI(TData item);
         }
         
+        protected struct PrefabSpawnInfo
+        {
+            public TGameObject SelectedPrefab;
+            public Transform SelectedPrefabTransform;
+            
+            public TGameObject Instance;
+            public GameObject InstanceGameObject;
+            public Transform InstanceTransform;
+        }
+        
         public readonly Func<TData[]> DataProvider;
 
         public bool ForceDestroyBeforeAdd;
         public List<TGameObject> Listing = new List<TGameObject>();
         public Transform Parent;
         public TGameObject Prefab;
-        
-        private Transform prefabTransform;
 
         private readonly Dictionary<TData, TGameObject> gameObjectTable = new Dictionary<TData, TGameObject>();
         
@@ -107,28 +115,37 @@ namespace LegendaryTools.UI
 
         protected virtual TGameObject CreateGameObject(TData item)
         {
-            TGameObject newGameObject = InstantiateFromPrefab(item, Prefab);
-            Transform goTransform = newGameObject.transform;
-            if (prefabTransform == null)
-            {
-                prefabTransform = Prefab.transform;
-            }
+            PrefabSpawnInfo prefabSpawnInfo = InstantiateFromPrefab(item, Prefab);
+            Listing.Add(prefabSpawnInfo.Instance);
+            gameObjectTable.Add(item, prefabSpawnInfo.Instance);
 
-            Listing.Add(newGameObject);
-            gameObjectTable.Add(item, newGameObject);
+            prefabSpawnInfo.InstanceTransform.SetParent(Parent);
+            prefabSpawnInfo.InstanceTransform.localPosition = prefabSpawnInfo.SelectedPrefabTransform.localPosition;
+            prefabSpawnInfo.InstanceTransform.localScale = prefabSpawnInfo.SelectedPrefabTransform.localScale;
+            prefabSpawnInfo.InstanceTransform.localRotation = prefabSpawnInfo.SelectedPrefabTransform.localRotation;
+            prefabSpawnInfo.Instance.Init(item);
 
-            goTransform.SetParent(Parent);
-            goTransform.localPosition = prefabTransform.localPosition;
-            goTransform.localScale = prefabTransform.localScale;
-            goTransform.localRotation = prefabTransform.localRotation;
-            newGameObject.Init(item);
-
-            return newGameObject;
+            return prefabSpawnInfo.Instance;
         }
 
-        protected virtual TGameObject InstantiateFromPrefab(TData item, TGameObject prefab)
+        protected virtual PrefabSpawnInfo InstantiateFromPrefab(TData item, TGameObject defaultPrefab)
         {
-            return Object.Instantiate(Prefab);
+            TGameObject selectedPrefab = PrefabSelector(item, defaultPrefab);
+            TGameObject newInstance = Object.Instantiate(selectedPrefab);
+
+            return new PrefabSpawnInfo()
+            {
+                SelectedPrefab = selectedPrefab,
+                SelectedPrefabTransform = selectedPrefab.GetComponent<Transform>(),
+                Instance = newInstance,
+                InstanceTransform = newInstance.GetComponent<Transform>(),
+                InstanceGameObject = newInstance.gameObject,
+            };
+        }
+        
+        protected virtual TGameObject PrefabSelector(TData item, TGameObject defaultPrefab)
+        {
+            return defaultPrefab;
         }
     }
 }
